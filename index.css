@@ -1,0 +1,45 @@
+/*
+ * rgb(222,44,33)  主色调
+ * #dcdcdc;背景灰
+*/
+
+.outScreen{
+    position:absolute;
+    left:-99999px;
+    top:-99999px;
+    visibility: hidden;
+}
+.disIn{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+body{
+    max-width:1000px;
+    margin:0 auto;
+}
+.header{
+    color:#fff;
+    background:rgb(222,44,33);
+}
+.headerLeft{
+    font-size:18px;
+    padding:10px;
+    margin-left:20px;
+}
+.headerRight{
+    width:60%;
+    text-align: right;
+}
+.section{
+    background:rgb(244,244,244);
+    min-height:calc(100vh - 44px);
+    box-sizing: border-box;
+    padding:30px;
+}
+.section>p{
+    margin-bottom: 10px;
+}
+
+
+

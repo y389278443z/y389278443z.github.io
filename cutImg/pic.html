@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>原生js实现图片剪切</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <div class="cut">
+        <div class="crop-area">
+            <img src="1.jpg" alt="" width="100%" height="100%">
+            <div class="crop-cut">
+                <img src="1.jpg" alt="" width="100%" height="100%" class="crop-cut-img">
+                <div class="crop-drap">
+                    <div class="crop-drap-main">
+                        <div class="drap-screen"></div>
+                        <div class="directive-box">
+                            <div class="line crop-drap-tline">
+                                <div class="crop-drap_t direct_square"></div>
+                            </div>
+                            <div class="line crop-drap-bline">
+                                <div class="crop-drap_b direct_square"></div>
+                            </div>
+                            <div class="line crop-drap-lline">
+                                <div class="crop-drap_l direct_square"></div>
+                            </div>
+                            <div class="line crop-drap-rline">
+                                <div class="crop-drap_r direct_square"></div>
+                            </div>
+                            <div class="direct_square crop-drap_lt"></div>
+                            <div class="direct_square crop-drap_rt"></div>
+                            <div class="direct_square crop-drap_lb"></div>
+                            <div class="direct_square crop-drap_rb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="done-img-box">
+            <img src="1.jpg" alt="" class="done-img">
+        </div>
+    </div>
+    <div class="finish">
+        <a href="javascript:void(0)" class="finishBtn">点击完成</a>
+    </div>
+    <script src="index.js"></script>
+
+    <script>
+        var container = $('.crop-area').el[0];
+        var doneBox = $('.done-img-box').el[0];
+        var doneImg = $('.done-img').el[0];
+        var containerWidth = parseFloat(getCss(container,'width'));
+        var containerHeight = parseFloat(getCss(container,'height'));
+        var dropScreen = $('.drap-screen').el[0];
+        var squares = $('.directive-box').el[0];
+        var dropBox = $('.crop-cut').el[0];
+        var cutImg = $('.crop-cut-img').el[0];
+        setCss(doneBox,'width',getCss(dropBox,'width'));
+        setCss(doneBox,'height',getCss(dropBox,'height'));
+        setCss(doneImg,'top',getCss(cutImg,'top'));
+        setCss(doneImg,'left',getCss(cutImg,'left'));
+
+        dropScreen.onmousedown = function (e) {
+          var oEvent = e || window.event;
+          var tempX = oEvent.clientX;
+          var tempY = oEvent.clientY;
+          this.onmousemove = function (ev) {
+            var $event = ev || window.event;
+            var sLeft = $event.clientX - tempX;
+            var sTop = $event.clientY - tempY;
+            tempX = $event.clientX;
+            tempY = $event.clientY;
+            var dropBoxTop = parseFloat(getCss(dropBox,'top'));
+            var dropBoxLeft = parseFloat(getCss(dropBox,'left'));
+            var dropBoxWidth = parseFloat(getCss(dropBox,'width'));
+            var dropBoxHeight = parseFloat(getCss(dropBox,'height'));
+            var cutImgTop = parseFloat(getCss(cutImg,'top'));
+            var cutImgLeft = parseFloat(getCss(cutImg,'left'));
+            var maxWidth = containerWidth - dropBoxWidth;
+            var maxHeight = containerHeight - dropBoxHeight;
+           if(dropBoxTop+sTop <0){
+             setCss(dropBox,'top',0);
+             setCss(cutImg,'top',0)
+           }else if(dropBoxTop+sTop>maxHeight){
+             setCss(dropBox,'top',maxHeight);
+             setCss(cutImg,'top',maxHeight)
+           }else{
+             setCss(dropBox,'top',dropBoxTop+sTop+'px');
+             setCss(cutImg,'top',cutImgTop-sTop+'px')
+           }
+           if(dropBoxLeft+sLeft<0){
+             setCss(dropBox,'left',0);
+             setCss(cutImg,'left',0);
+           }else if(dropBoxLeft+sLeft>maxWidth){
+             setCss(dropBox,'left',maxWidth);
+             setCss(cutImg,'left',maxWidth);
+           }else{
+             setCss(dropBox,'left',dropBoxLeft+sLeft+'px');
+             setCss(cutImg,'left',cutImgLeft-sLeft+'px')
+           }
+            setCss(doneImg,'top',cutImgTop+'px');
+            setCss(doneImg,'left',cutImgLeft+'px');
+          };
+          document.onmouseup = function (event) {
+            var $event = event || window.event;
+            dropScreen.onmousemove = null;
+            $event.preventDefault();
+          };
+          e.preventDefault();
+        };
+
+        squares.onmousedown = function (e) {
+          var oEvent = e || window.event;
+          var tempX = oEvent.clientX;
+          var tempY = oEvent.clientY;
+          container.onmousemove = function (ev) {
+            var dropBoxTop = parseFloat(getCss(dropBox,'top'));
+            var dropBoxLeft = parseFloat(getCss(dropBox,'left'));
+            var cutImgTop = parseFloat(getCss(cutImg,'top'));
+            var cutImgLeft = parseFloat(getCss(cutImg,'left'));
+            var widths = parseFloat(getCss(dropBox,'width'));
+            var heights = parseFloat(getCss(dropBox,'height'));
+            var classArr = oEvent.target.classList;
+            var $event = ev || window.event;
+            var sTop = $event.clientY - tempY;
+            var sLeft = $event.clientX - tempX;
+
+            if(classArr.contains('crop-drap_t')){
+              var sTop = $event.clientY - tempY;
+              tempY = $event.clientY;
+              setCss(dropBox,'height',heights-sTop+'px');
+              setCss(dropBox,'top',dropBoxTop+sTop+'px');
+              setCss(cutImg,'top',cutImgTop-sTop+'px')
+              return;
+            }
+            if(classArr.contains('crop-drap_b')){
+              tempY = $event.clientY;
+              setCss(dropBox,'height',heights+sTop+'px');
+              return;
+            }
+            if(classArr.contains('crop-drap_l')){
+              var sLeft = $event.clientX - tempX;
+              tempX = $event.clientX;
+              setCss(dropBox,'width',widths-sLeft+'px');
+              setCss(dropBox,'left',dropBoxLeft+sLeft+'px');
+              setCss(cutImg,'left',cutImgLeft-sLeft+'px');
+            }
+            if(classArr.contains('crop-drap_r')){
+              tempX = $event.clientX;
+              setCss(dropBox,'width',widths+sLeft+'px');
+            }
+            if(classArr.contains('crop-drap_lt')){
+              tempX = $event.clientX;
+              tempY = $event.clientY;
+              setCss(dropBox,'width',widths-sLeft+'px');
+              setCss(dropBox,'height',heights-sTop+'px');
+              setCss(dropBox,'left',dropBoxLeft+sLeft+'px');
+              setCss(dropBox,'top',dropBoxTop+sTop+'px');
+              setCss(cutImg,'top',cutImgTop-sTop+'px');
+              setCss(cutImg,'left',cutImgLeft-sLeft+'px');
+            }
+            if(classArr.contains('crop-drap_lb')){
+              tempX = $event.clientX;
+              tempY = $event.clientY;
+              setCss(dropBox,'width',widths-sLeft+'px');
+              setCss(dropBox,'height',heights+sTop+'px');
+              setCss(dropBox,'left',dropBoxLeft+sLeft+'px');
+              setCss(cutImg,'left',cutImgLeft-sLeft+'px');
+            }
+            if(classArr.contains('crop-drap_rt')){
+              tempX = $event.clientX;
+              tempY = $event.clientY;
+              setCss(dropBox,'width',widths+sLeft+'px');
+              setCss(dropBox,'height',heights-sTop+'px');
+              setCss(dropBox,'top',dropBoxTop+sTop+'px');
+              setCss(cutImg,'top',cutImgTop-sTop+'px');
+            }
+            if(classArr.contains('crop-drap_rb')){
+              tempX = $event.clientX;
+              tempY = $event.clientY;
+              setCss(dropBox,'width',widths+sLeft+'px');
+              setCss(dropBox,'height',heights+sTop+'px');
+            }
+            setCss(doneBox,'width',getCss(dropBox,'width'));
+            setCss(doneBox,'height',getCss(dropBox,'height'));
+            setCss(doneImg,'top',cutImgTop+'px');
+            setCss(doneImg,'left',cutImgLeft+'px');
+          };
+
+          document.onmouseup = function (ev) {
+            container.onmousemove = null;
+            e.preventDefault();
+          };
+          e.preventDefault();
+        }
+
+        $('.finishBtn').el[0].onclick = function () {
+          var width = getCss(dropBox,'width');
+          var height = getCss(dropBox,'height');
+          var top = getCss(dropBox,'top');
+          var left = getCss(dropBox,'left');
+          alert(`截取的图片高度为${height},宽度为${width},距离顶部为${top},距离左边为${left}`);
+        }
+    </script>
+</body>
+</html>

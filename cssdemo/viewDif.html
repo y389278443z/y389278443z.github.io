@@ -23,19 +23,22 @@
             perspective: 1px;
         }
         .box{
-            position:relative;
             transform-style: preserve-3d;
         }
         li{
             height:300px;
         }
+        .vision{
+            position:relative;
+        }
         .img{
             position:absolute;
             z-index: -1;
-            top:50px;
+            top:0;
             left:0;
             transform:translateZ(-1px) scale(2);
             width:100%;
+            height:auto;
         }
     </style>
 </head>
@@ -46,7 +49,7 @@
             <li class="g">123</li>
             <li class="r">456</li>
             <li class="vision">
-                <img src="images/1.jpg" alt="" class="img">
+                <img src="http://pic.sc.chinaz.com/files/pic/pic9/201711/zzpic7983.jpg" alt="" class="img" width="100%">
             </li>
             <li class="b">789</li>
             <li class="o">963</li>
